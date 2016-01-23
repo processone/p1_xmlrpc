@@ -1,3 +1,5 @@
+# p1_xmlrpc
+
 This is an HTTP 1.1 compliant XML-RPC library for Erlang. It is
 designed to make it easy to write XML-RPC Erlang clients and/or
 servers. The library is compliant with the XML-RPC specification
@@ -22,3 +24,24 @@ http://ejabberd.jabber.ru/files/contributions/xmlrpc-1.13-ipr2.tgz
 to add support for custom HTTP headers, https transport and
 case insensitive HTTP header support.
 Custom HTTP headers allow to send cookies between client and server.
+
+## Building
+
+XMLRPC library can be build as follow:
+
+    make
+
+It is a rebar-compatible OTP application. Alternatively, you can build
+it with rebar:
+
+    rebar compile
+
+## Development
+
+### Test
+
+#### Unit test
+
+You can run eunit test with the command:
+
+    $ rebar eunit
