@@ -39,7 +39,7 @@ module_export_list( Module ) ->
 			case beam_lib:chunks( Filename, [exports]) of
 				{ok, {_, [{exports, Exports}]}} ->
 					Exports;
-				{error, beam_lib, Er} ->
+				{error, beam_lib, _Er} ->
 					false
 			end
 	end. 
