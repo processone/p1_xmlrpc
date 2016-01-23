@@ -177,12 +177,8 @@ open_socket(Host, Port, Options) ->
     case fetch_comm_module(Options) of
         ssl ->
             %% Start ssl application
-            application:start(ssl),
-            %% Always seed
-            old_ssl:seed("wheredoyouthinkitcanbefound"),
-            %% new ssl implementation does not seem to work as of R13B01
-            %%{ok, SslSocket} = ssl:connect(Host, Port, [{ssl_imp, new}, {active, false}, {verify, verify_none}]),
-            old_ssl:connect(Host, Port, [{verify, 0}, {active, false}]);
+            ssl:start(),
+            ssl:connect(Host, Port, [{verify, verify_none}, {active, false}]);
         _ ->
             gen_tcp:connect(Host, Port, [{active, false}])
     end.
