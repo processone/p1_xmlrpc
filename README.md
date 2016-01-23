@@ -1,5 +1,7 @@
 # p1_xmlrpc
 
+Erlang XMLRPC implementation with SSL, cookies, Authentication.
+
 This is an HTTP 1.1 compliant XML-RPC library for Erlang. It is
 designed to make it easy to write XML-RPC Erlang clients and/or
 servers. The library is compliant with the XML-RPC specification
