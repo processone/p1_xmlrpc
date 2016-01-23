@@ -1,5 +1,7 @@
 # p1_xmlrpc
 
+[![Build Status](https://travis-ci.org/processone/p1_xmlrpc.svg?branch=master)](https://travis-ci.org/processone/p1_xmlrpc) [![Coverage Status](https://coveralls.io/repos/processone/p1_xmlrpc/badge.svg?branch=master&service=github)](https://coveralls.io/github/processone/p1_xmlrpc?branch=master) [![Hex version](https://img.shields.io/hexpm/v/p1_xmlrpc.svg "Hex version")](https://hex.pm/packages/p1_xmlrpc)
+
 Erlang XMLRPC implementation with SSL, cookies, Authentication.
 
 This is an HTTP 1.1 compliant XML-RPC library for Erlang. It is
