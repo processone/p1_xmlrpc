@@ -38,6 +38,6 @@
 	  %% string()
 	  xforwardedfor,
 	  %% list()
-	  cookies
+	  cookies = []
 	 }).
 

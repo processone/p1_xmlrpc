@@ -71,7 +71,7 @@
     | {error, Reason::term()}
     | {error, socket(), Reason::term()}.
 
--type options() :: [{string(), term()}].
+-type options() :: [{atom(), term()}].
 
 %% Exported: call/{3,4,5,6,7,8}
 

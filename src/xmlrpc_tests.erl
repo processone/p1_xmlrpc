@@ -64,12 +64,12 @@ is_alive(Pid) ->
 
 handle_int_call(_Pid) ->
     ShouldBe = {ok,{response,[{array, [42]}]}},
-    ?_assertEqual(ShouldBe, xmlrpc:call(localhost, 4567, "/",
+    ?_assertEqual(ShouldBe, xmlrpc:call("localhost", 4567, "/",
                                          {call, echo, [42]})).
 
 handle_float_call(_Pid) ->
     ShouldBe = {ok,{response,[{array, [42.000]}]}},
-    [?_assertEqual(ShouldBe, xmlrpc:call(localhost, 4567, "/",
+    [?_assertEqual(ShouldBe, xmlrpc:call("localhost", 4567, "/",
                           {call, echo, [42.0]}))].
 
 handle_struct_call(_Pid) ->
@@ -89,7 +89,7 @@ handle_struct_call(_Pid) ->
 
 handle_timeout_call(_Pid) ->
     ShouldBe = {ok,{response,[{array, [42]}]}},
-    Response = xmlrpc:call(localhost, 4567, "/",
+    Response = xmlrpc:call("localhost", 4567, "/",
                         {call, echo, [42]}, false, 10000),
     ?_assertEqual(ShouldBe, Response).
 
@@ -97,7 +97,7 @@ handle_extraheader_call(_Pid) ->
     Options = [{ssl, false}],
     Cookie = "Cookie: DUMMY=yes\r\n",
     Timeout = 10000,
-    Response = xmlrpc:call(localhost, 4567, "/",
+    Response = xmlrpc:call("localhost", 4567, "/",
                            {call, echo, [421]}, false, Timeout,
                            Cookie, Options),
     ?_assertEqual({ok,{response,[{array, [421]}]}}, Response).
@@ -106,7 +106,7 @@ handle_wrong_header_call(_Pid) ->
     Options = [{ssl, false}],
     Cookie = "Cookie: DUMMY=This is not a valid header",
     Timeout = 5000,
-    Response = xmlrpc:call(localhost, 4567, "/",
+    Response = xmlrpc:call("localhost", 4567, "/",
                            {call, echo, [421]}, false, Timeout,
                            Cookie, Options),
     ?_assertEqual({error, timeout}, Response).

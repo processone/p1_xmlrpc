@@ -94,13 +94,13 @@ encode(Double) when is_float(Double) ->
     ["<double>", io_lib:format("~p", [Double]), "</double>"];
 encode({date, Date}) ->
     case xmlrpc_util:is_iso8601_date(Date) of
-	yes -> ["<dateTime.iso8601>", Date, "</dateTime.iso8601>"];
-	no -> {error, {bad_date, Date}}
+	yes -> ["<dateTime.iso8601>", Date, "</dateTime.iso8601>"]
+	%% no -> {error, {bad_date, Date}}
     end;
 encode({base64, Base64}) ->
     case xmlrpc_util:is_base64(Base64) of
-	yes -> ["<base64>", Base64, "</base64>"];
-	no -> {error, {bad_base64, Base64}}
+	yes -> ["<base64>", Base64, "</base64>"]
+	%% no -> {error, {bad_base64, Base64}}
     end;
 encode(Value) ->
     case xmlrpc_util:is_string(Value) of
