@@ -77,12 +77,13 @@ parse_header(Socket, Timeout, Header) ->
 	{ok, HeaderField} ->
 	    case split_header_field(HeaderField) of
 		{"content-length:", ContentLength} ->
-		    case catch list_to_integer(ContentLength) of
-                        {'EXIT', {badarg,_}} -> {status, 400};
+		    try list_to_integer(ContentLength) of
 			N ->
 			    parse_header(Socket, Timeout,
 					 Header#header{content_length = N})
-			  end;
+                    catch
+                        _:badarg -> {status, 400}
+                    end;
 		{"content-type:", Type="text/xml"++_} ->
 		    parse_header(Socket, Timeout,
 				 Header#header{content_type = Type});
@@ -159,14 +160,7 @@ do_call({M, F} = _Handler, State, Payload, Header) ->
 	end.
 
 eval_payload(Socket, Timeout, {M, F} = Handler, State, Connection, Payload, Header) ->
-    case catch do_call(Handler, State, Payload, Header) of
-	{'EXIT', Reason} when Connection == close ->
-	    ?ERROR_LOG({M, F, {'EXIT', Reason}}),
-	    send(Socket, 500, "Connection: close\r\n");
-	{'EXIT', Reason} ->
-	    ?ERROR_LOG({M, F, {'EXIT', Reason}}),
-	    send(Socket, 500),
-	    handler(Socket, Timeout, Handler, State);
+    try do_call(Handler, State, Payload, Header) of
 	{error, Reason} when Connection == close ->
 	    ?ERROR_LOG({M, F, Reason}),
 	    send(Socket, 500, "Connection: close\r\n");
@@ -190,6 +184,13 @@ eval_payload(Socket, Timeout, {M, F} = Handler, State, Connection, Payload, Head
 	{true, NewTimeout, NewState, ResponsePayload, ExtraHeaders} ->
 	    encode_send(Socket, 200, ExtraHeaders, ResponsePayload),
 	    handler(Socket, NewTimeout, Handler, NewState)
+    catch _:Reason when Connection == close ->
+              ?ERROR_LOG({M, F, {'EXIT', Reason}}),
+              send(Socket, 500, "Connection: close\r\n");
+          _:Reason ->
+              ?ERROR_LOG({M, F, {'EXIT', Reason}}),
+              send(Socket, 500),
+              handler(Socket, Timeout, Handler, State)
     end.
 
 encode_send(Socket, StatusCode, ExtraHeader, Payload) ->

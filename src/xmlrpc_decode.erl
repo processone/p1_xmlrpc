@@ -31,13 +31,15 @@
 -include_lib("xmerl/include/xmerl.hrl").
 
 payload(Payload) ->
-    case catch xmerl_scan:string(Payload, [{encoding, latin1}]) of
-        {'EXIT', Reason} -> {error, Reason};
+    try xmerl_scan:string(Payload, [{encoding, latin1}]) of
 	{E, _}  ->
-	    case catch decode_element(E) of
-		{'EXIT', Reason} -> {error, Reason};
+	    try decode_element(E) of
 		Result -> Result
+            catch
+		_:Reason1 -> {error, Reason1}
 	    end
+    catch
+        _:Reason -> {error, Reason}
     end.
 
 decode_element(#xmlElement{name = methodCall} = MethodCall)
@@ -194,20 +196,22 @@ decode_values(Content) ->
     end.
 
 make_integer(Integer) ->
-    case catch list_to_integer(Integer) of
-	{'EXIT', _Reason} -> throw({error, {not_integer, Integer}});
-	Value -> Value
+    try list_to_integer(Integer)
+    catch
+	_:_Reason ->
+            throw({error, {not_integer, Integer}})
     end.
 
 make_double(Double) ->
-    case catch list_to_float(Double) of
-	{'EXIT', _} ->
-            case catch list_to_integer(Double) of
-	       {'EXIT', _} ->
-                    throw({error, {not_double, Double}});
+    try list_to_float(Double)
+    catch
+	_:_ ->
+            try list_to_integer(Double) of
                 Value -> float(Value)
-        end;
-	Value -> Value
+            catch
+                _:_ ->
+                    throw({error, {not_double, Double}})
+        end
     end.
 
 % FIXME

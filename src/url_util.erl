@@ -54,12 +54,13 @@ parse_http(X, Protocol) ->
 		    {Protocol, Host, Port, File};
 		M ->
 		    Site = string:substr(Host,1,M-1),
-		    case (catch list_to_integer(
-				  string:substr(Host, M+1, length(Host)))) of
-			{'EXIT', _} ->
-			    {Protocol, Site, 80, File};
+		    try list_to_integer(
+				  string:substr(Host, M+1, length(Host))) of
 			Port ->
 			    {Protocol, Site, Port, File}
+                    catch
+			_:_ ->
+			    {Protocol, Site, 80, File}
 		    end
 	    end
     end.

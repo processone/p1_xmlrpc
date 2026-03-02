@@ -269,13 +269,14 @@ parse_header(Socket, Timeout, SslOption, Header) ->
         {ok, HeaderField} ->
             case string:tokens(string:to_lower(HeaderField), " \r\n") of
                 ["content-length:", ContentLength] ->
-                    case catch list_to_integer(ContentLength) of
-                        badarg ->
-                            {error, {invalid_content_length, ContentLength}};
+                    try list_to_integer(ContentLength) of
                         Value ->
                             parse_header(Socket, Timeout, SslOption,
                                          Header#header{content_length =
                                                        Value})
+                    catch
+                        _:badarg ->
+                            {error, {invalid_content_length, ContentLength}}
                     end;
                 ["connection:", "close"] ->
                     parse_header(Socket, Timeout, SslOption,
