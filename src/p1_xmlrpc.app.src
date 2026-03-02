@@ -26,7 +26,7 @@
   {description, "XML-RPC server"},
   {vsn, "1.15.1"},
   {registered, []},
-  {applications, [kernel, stdlib]},
+  {applications, [kernel, stdlib, ssl, xmerl]},
   {env, []},
 
   %% hex.pm packaging:
