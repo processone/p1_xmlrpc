@@ -14,11 +14,11 @@ jobs:
     container:
       image: public.ecr.aws/docker/library/erlang:${{ matrix.otp }}
     steps:
+    - uses: actions/checkout@v6
     - run: rebar3 compile
     - run: rebar3 xref
     - run: rebar3 dialyzer
     - run: rebar3 eunit -v
-    - uses: actions/checkout@v6
     - name: Send to Coveralls
       if: matrix.otp == 28
       env:
